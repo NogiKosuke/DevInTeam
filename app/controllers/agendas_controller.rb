@@ -22,8 +22,15 @@ class AgendasController < ApplicationController
   end
 
   def destroy
-    @agenda.destroy
-    redirect_to dashboard_path, notice: 'アジェンダを削除しました'
+    if @agenda.destroy
+      @team = Team.find(@agenda.team_id)
+      @team.members.each do |member|
+        TeamMailer.team_mail(member.email, @agenda).deliver
+      end
+      redirect_to dashboard_path, notice: 'アジェンダを削除しました'
+    else
+      redirect_to dashboard_path, notice: '失敗しました'
+    end
   end
 
   private
