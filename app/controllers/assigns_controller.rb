@@ -21,18 +21,6 @@ class AssignsController < ApplicationController
     redirect_to team_url(params[:team_id]), notice: destroy_message
   end
 
-  def change
-    @assign = Assign.find(params[:id])
-    @team = @assign.team
-    @team.owner = @assign.user
-    if @team.save
-      ChangeLeaderMailer.change_leader_mail(@assign).deliver
-      redirect_to team_url(params[:team_id]), notice: '権限を変更しました'
-    else
-      redirect_to team_url(params[:team_id]), notice: '失敗しました'
-    end
-  end
-
   private
 
   def assign_params
